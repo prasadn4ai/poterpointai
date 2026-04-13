@@ -4033,7 +4033,209 @@ function AIQuickActions({ slide, updateSlide, T }) {
   );
 }
 
-function AppInner() {
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 🏠 LANDING PAGE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function LandingPage({ onEnter }) {
+  const { T } = useTheme();
+  const [activeVariant, setActiveVariant] = useState(0);
+  const isLight = T.mode === "light";
+  const bg = isLight ? "#ffffff" : "#06090f";
+  const cardBg = isLight ? "#f8fafc" : "#111827";
+  const border = isLight ? "#e5e7eb" : "rgba(148,163,194,0.12)";
+  const textPrimary = isLight ? "#111827" : "#f1f5f9";
+  const textSec = isLight ? "#6b7280" : "#94a3b8";
+
+  const variants = ["Corporate", "Cards", "Minimal", "Dark", "Infographic"];
+
+  return (
+    <div style={{ background: bg, minHeight: "100vh", fontFamily: T.font, color: textPrimary, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+      <style>{`@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .fade-up { animation: fadeUp 0.7s ease forwards; }
+        .fade-up-2 { animation: fadeUp 0.7s 0.15s ease forwards; opacity: 0; }
+        .fade-up-3 { animation: fadeUp 0.7s 0.3s ease forwards; opacity: 0; }
+        .float { animation: float 4s ease-in-out infinite; }
+        .land-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+      `}</style>
+
+      {/* ─── NAV ─── */}
+      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 48px", position: "sticky", top: 0, zIndex: 100, background: bg + "ee", backdropFilter: "blur(20px)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: `linear-gradient(135deg, ${T.accent}, ${T.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", color: "#fff", fontWeight: 900 }}>P</div>
+          <span style={{ fontSize: "18px", fontWeight: 800, letterSpacing: "-0.02em" }}>PoterPointAI</span>
+        </div>
+        <button onClick={() => onEnter("editor")} style={{ padding: "10px 24px", background: `linear-gradient(135deg, ${T.accent}, ${T.accentDark})`, color: "#fff", border: "none", borderRadius: "10px", fontSize: "14px", fontWeight: 700, cursor: "pointer", fontFamily: T.font }}>
+          Open Editor
+        </button>
+      </nav>
+
+      {/* ─── SECTION 1: HERO ─── */}
+      <section style={{ textAlign: "center", padding: "80px 48px 60px", maxWidth: "900px", margin: "0 auto" }}>
+        <div className="fade-up" style={{ display: "inline-block", padding: "6px 16px", borderRadius: "20px", background: T.accentGlow, color: T.accent, fontSize: "13px", fontWeight: 700, marginBottom: "24px", border: `1px solid ${T.accent}30` }}>
+          AI-Powered Presentations
+        </div>
+        <h1 className="fade-up" style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.04em", margin: "0 0 20px" }}>
+          Turn your data into<br /><span style={{ color: T.accent }}>stunning presentations</span><br />in minutes
+        </h1>
+        <p className="fade-up-2" style={{ fontSize: "18px", color: textSec, lineHeight: 1.7, maxWidth: "600px", margin: "0 auto 40px" }}>
+          From Excel, templates, or AI prompts — create, customize, and present effortlessly with drag-and-drop precision.
+        </p>
+        <div className="fade-up-3" style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+          {[
+            { label: "📊 Start from Excel", action: "excel", desc: "Upload data → AI generates slides" },
+            { label: "📚 Start from Template", action: "template", desc: "Choose QBR, KPI, Sales..." },
+            { label: "✨ Start with AI", action: "ai", desc: "Describe → Generate instantly" },
+          ].map(cta => (
+            <button key={cta.action} onClick={() => onEnter(cta.action)}
+              style={{ padding: "14px 28px", border: `1px solid ${border}`, borderRadius: "12px", background: cardBg, cursor: "pointer", fontFamily: T.font, textAlign: "left", transition: "all 0.2s", minWidth: "200px" }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.accent; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = border; e.currentTarget.style.transform = "translateY(0)"; }}>
+              <div style={{ fontSize: "15px", fontWeight: 700, color: textPrimary, marginBottom: "4px" }}>{cta.label}</div>
+              <div style={{ fontSize: "12px", color: textSec }}>{cta.desc}</div>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── SECTION 2: LIVE PREVIEW WITH VARIANTS ─── */}
+      <section style={{ padding: "40px 48px 80px", maxWidth: "1000px", margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginBottom: "24px" }}>
+          {variants.map((v, i) => (
+            <button key={v} onClick={() => setActiveVariant(i)}
+              style={{ padding: "6px 16px", border: `1px solid ${activeVariant === i ? T.accent : border}`, borderRadius: "8px", background: activeVariant === i ? T.accentGlow : "transparent", color: activeVariant === i ? T.accent : textSec, fontSize: "12px", fontWeight: 600, cursor: "pointer", fontFamily: T.font, transition: "all 0.15s" }}>
+              {v}
+            </button>
+          ))}
+        </div>
+        <div style={{ borderRadius: "16px", overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,0.2)", border: `1px solid ${border}`, maxWidth: "700px", margin: "0 auto", aspectRatio: "16/9" }}>
+          <div style={{ width: "100%", height: "100%", position: "relative" }}>
+            <div style={{ position: "absolute", inset: 0, background: activeVariant === 3 ? "linear-gradient(145deg, #070b14, #0f1729)" : activeVariant === 4 ? "linear-gradient(135deg, #f0fdfa, #ccfbf1)" : "linear-gradient(145deg, #f8fafc, #ffffff)", display: "flex", flexDirection: "column", padding: "28px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "30px" }}>
+                <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: T.accent, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 900, fontSize: "18px" }}>M</div>
+                <div>
+                  <div style={{ fontSize: "16px", fontWeight: 800, color: activeVariant === 3 ? "#f1f5f9" : "#111827" }}>Microsoft Practice</div>
+                  <div style={{ fontSize: "11px", color: activeVariant === 3 ? "#64748b" : "#9ca3af" }}>Quarterly Report • Q1 2026</div>
+                </div>
+              </div>
+              <div style={{ fontSize: "32px", fontWeight: 900, color: activeVariant === 3 ? "#f1f5f9" : "#111827", letterSpacing: "-0.03em", marginBottom: "16px" }}>
+                Performance Dashboard
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", flex: 1 }}>
+                {[{ icon: "👥", val: "24", lbl: "Team Size" }, { icon: "💰", val: "$1.2M", lbl: "Revenue" }, { icon: "📈", val: "94%", lbl: "Utilization" }].map(m => (
+                  <div key={m.lbl} style={{ background: activeVariant === 3 ? "#111d32" : "#ffffff", border: `1px solid ${activeVariant === 3 ? "rgba(148,163,194,0.15)" : "#e5e7eb"}`, borderRadius: activeVariant === 4 ? "16px" : "12px", padding: "20px", textAlign: "center" }}>
+                    <div style={{ fontSize: "24px", marginBottom: "8px" }}>{m.icon}</div>
+                    <div style={{ fontSize: "28px", fontWeight: 800, color: T.accent }}>{m.val}</div>
+                    <div style={{ fontSize: "12px", color: textSec, marginTop: "4px" }}>{m.lbl}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 3: FEATURE HIGHLIGHTS ─── */}
+      <section style={{ padding: "80px 48px", background: isLight ? "#f8fafc" : "#0c1220" }}>
+        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+          <h2 style={{ fontSize: "36px", fontWeight: 900, textAlign: "center", marginBottom: "12px", letterSpacing: "-0.03em" }}>Everything you need</h2>
+          <p style={{ textAlign: "center", color: textSec, fontSize: "16px", marginBottom: "48px" }}>Powerful features that make presentation creation effortless</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px" }}>
+            {[
+              { icon: "🤖", title: "Smart AI", items: ["Improve slides instantly", "Make text concise", "Add visual elements", "Extract insights"] },
+              { icon: "🎨", title: "Design Control", items: ["9 font families", "5 design variants", "56+ icons library", "Bullet style picker"] },
+              { icon: "📊", title: "Data Power", items: ["Excel import & sync", "Template library", "Data masking", "Auto-create templates"] },
+              { icon: "👥", title: "Team & KPI", items: ["Photo management", "KPI dashboards", "Manager scorecards", "Team hierarchy"] },
+            ].map(f => (
+              <div key={f.title} className="land-card" style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: "16px", padding: "24px", transition: "all 0.25s" }}>
+                <div style={{ fontSize: "32px", marginBottom: "12px" }}>{f.icon}</div>
+                <div style={{ fontSize: "16px", fontWeight: 800, marginBottom: "12px" }}>{f.title}</div>
+                {f.items.map(item => (
+                  <div key={item} style={{ fontSize: "13px", color: textSec, padding: "4px 0", display: "flex", gap: "8px", alignItems: "center" }}>
+                    <span style={{ color: T.accent, fontSize: "10px" }}>✓</span> {item}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 4: HOW IT WORKS ─── */}
+      <section style={{ padding: "80px 48px" }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+          <h2 style={{ fontSize: "36px", fontWeight: 900, textAlign: "center", marginBottom: "48px", letterSpacing: "-0.03em" }}>How it works</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}>
+            {[
+              { step: "1", icon: "📤", title: "Upload or Describe", desc: "Upload Excel, choose template, or type an AI prompt" },
+              { step: "2", icon: "✨", title: "AI Generates", desc: "AI creates structured slides matching your data" },
+              { step: "3", icon: "🖱️", title: "Customize", desc: "Drag, edit, style — every element is selectable" },
+              { step: "4", icon: "📥", title: "Export & Present", desc: "Download PPTX, PDF, or present directly" },
+            ].map(s => (
+              <div key={s.step} style={{ textAlign: "center" }}>
+                <div style={{ width: "56px", height: "56px", borderRadius: "16px", background: T.accentGlow, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", margin: "0 auto 16px", border: `1px solid ${T.accent}30` }}>{s.icon}</div>
+                <div style={{ fontSize: "11px", fontWeight: 800, color: T.accent, marginBottom: "6px", textTransform: "uppercase", letterSpacing: "1px" }}>Step {s.step}</div>
+                <div style={{ fontSize: "16px", fontWeight: 700, marginBottom: "8px" }}>{s.title}</div>
+                <div style={{ fontSize: "13px", color: textSec, lineHeight: 1.6 }}>{s.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 5: USE CASES ─── */}
+      <section style={{ padding: "80px 48px", background: isLight ? "#f8fafc" : "#0c1220" }}>
+        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+          <h2 style={{ fontSize: "36px", fontWeight: 900, textAlign: "center", marginBottom: "48px", letterSpacing: "-0.03em" }}>Built for every team</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px" }}>
+            {[
+              { icon: "📊", title: "Quarterly Reviews", desc: "Comprehensive QBR with KPIs, billing, team updates", color: "#0078d4" },
+              { icon: "📈", title: "KPI Dashboards", desc: "Auto-generated metrics from Excel data", color: "#28a745" },
+              { icon: "💼", title: "Sales Decks", desc: "Pipeline analysis, revenue forecasts, client wins", color: "#8b5cf6" },
+              { icon: "📋", title: "Project Updates", desc: "Timeline, milestones, resource allocation reports", color: "#0d9488" },
+            ].map(uc => (
+              <div key={uc.title} className="land-card" style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: "16px", padding: "24px", transition: "all 0.25s", borderTop: `3px solid ${uc.color}` }}>
+                <div style={{ fontSize: "28px", marginBottom: "12px" }}>{uc.icon}</div>
+                <div style={{ fontSize: "16px", fontWeight: 800, marginBottom: "8px" }}>{uc.title}</div>
+                <div style={{ fontSize: "13px", color: textSec, lineHeight: 1.6 }}>{uc.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 6: FINAL CTA ─── */}
+      <section style={{ padding: "100px 48px", textAlign: "center" }}>
+        <h2 style={{ fontSize: "42px", fontWeight: 900, marginBottom: "16px", letterSpacing: "-0.03em" }}>
+          Ready to create?
+        </h2>
+        <p style={{ fontSize: "18px", color: textSec, marginBottom: "32px" }}>
+          Start building your next presentation in under a minute.
+        </p>
+        <button onClick={() => onEnter("editor")}
+          style={{ padding: "16px 40px", background: `linear-gradient(135deg, ${T.accent}, ${T.accentDark})`, color: "#fff", border: "none", borderRadius: "14px", fontSize: "18px", fontWeight: 800, cursor: "pointer", fontFamily: T.font, boxShadow: `0 8px 32px ${T.accentGlow}`, transition: "transform 0.2s" }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
+          onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}>
+          Create your first presentation →
+        </button>
+      </section>
+
+      {/* ─── FOOTER ─── */}
+      <footer style={{ padding: "24px 48px", borderTop: `1px solid ${border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: `linear-gradient(135deg, ${T.accent}, ${T.purple})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", color: "#fff", fontWeight: 900 }}>P</div>
+          <span style={{ fontSize: "13px", fontWeight: 700 }}>PoterPointAI</span>
+          <span style={{ fontSize: "11px", color: textSec }}>• ppt.poterai.com</span>
+        </div>
+        <div style={{ fontSize: "12px", color: textSec }}>Powered by Miracle Software Systems</div>
+      </footer>
+    </div>
+  );
+}
+
+function AppInner({ pendingAction, onClearAction, onShowLanding }) {
   const { T, css } = useTheme();
   const slides = useStore((s) => s.slides);
   const activeSlide = useStore((s) => s.activeSlide);
@@ -4047,6 +4249,15 @@ function AppInner() {
   const [showAI, setShowAI] = useState(false);
   const [showDataMgr, setShowDataMgr] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
+
+  // Handle pending action from landing page
+  useEffect(() => {
+    if (!pendingAction) return;
+    if (pendingAction === "ai") setShowAI(true);
+    else if (pendingAction === "template") setShowTemplates(true);
+    else if (pendingAction === "excel") setShowDataMgr(true);
+    onClearAction?.();
+  }, [pendingAction, onClearAction]);
 
   const current = slides[activeSlide];
   const currentSchema = current ? SLIDE_SCHEMA[current.type] : null;
@@ -4071,14 +4282,14 @@ function AppInner() {
         background: T.mode === "light" ? T.surface : "rgba(255,255,255,0.01)", backdropFilter: "blur(20px)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-          <div style={{
+          <div onClick={onShowLanding} style={{
             width: "34px", height: "34px", borderRadius: T.radiusSm,
             background: `linear-gradient(135deg, ${T.accent}, ${T.purple})`,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontWeight: 900, fontSize: "15px", color: "#fff",
+            fontWeight: 900, fontSize: "15px", color: "#fff", cursor: "pointer",
           }}>P</div>
           <div>
-            <div style={{ fontWeight: 800, fontSize: "15px", letterSpacing: "-0.02em" }}>PoterPointAI</div>
+            <div onClick={onShowLanding} style={{ fontWeight: 800, fontSize: "15px", letterSpacing: "-0.02em", cursor: "pointer" }}>PoterPointAI</div>
             <div style={{ color: T.textDim, fontSize: "10px", fontFamily: T.fontMono }}>{slides.length} slide{slides.length !== 1 ? "s" : ""} • ppt.poterai.com</div>
           </div>
         </div>
@@ -4498,9 +4709,21 @@ export default function App() {
     })
   );
 
+  const [view, setView] = useState("landing"); // "landing" | "editor"
+  const [pendingAction, setPendingAction] = useState(null);
+
+  const handleEnter = useCallback((action) => {
+    setView("editor");
+    if (action && action !== "editor") setPendingAction(action);
+  }, []);
+
   return (
     <StoreContext.Provider value={store}>
-      <AppInner />
+      {view === "landing" ? (
+        <LandingPage onEnter={handleEnter} />
+      ) : (
+        <AppInner pendingAction={pendingAction} onClearAction={() => setPendingAction(null)} onShowLanding={() => setView("landing")} />
+      )}
     </StoreContext.Provider>
   );
 }
