@@ -1089,13 +1089,84 @@ app.get("/api/design-variants/:id", (req, res) => {
 });
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AI SLIDE EDIT — Improve/Concise/Visual/Insights per-slide
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const EDIT_PROMPTS = {
+  improve: "You are an expert presentation designer. Improve this slide for clarity and professionalism. Make text concise, improve structure, enhance readability. Keep the same slide type.",
+  concise: "You are an editor. Make all text on this slide extremely concise. Convert paragraphs to short bullet points. Remove filler words. Keep key data and numbers. Keep the same slide type.",
+  visual: "You are a visual designer. Transform this slide to be more visual. Replace text with metrics/icons/cards where possible. Add emoji icons to items. Improve visual hierarchy. Keep the same slide type.",
+  insights: "You are a business analyst. Analyze this slide data and highlight the key business insights. Add insight callouts, emphasize important numbers, and add strategic context. Keep the same slide type.",
+};
+
+app.post("/api/ai/edit-slide", express.json(), async (req, res) => {
+  try {
+    const { action, slideData } = req.body;
+    if (!action || !slideData) return res.status(400).json({ error: "action and slideData required" });
+
+    const actionPrompt = EDIT_PROMPTS[action] || EDIT_PROMPTS.improve;
+    const apiKey = process.env.GOOGLE_API_KEY;
+    if (!apiKey) return res.status(500).json({ error: "GOOGLE_API_KEY not set" });
+
+    // Strip non-content fields, keep all slide data
+    const { id, layout, elementStyles, elementGroups, ...contentData } = slideData;
+
+    const prompt = `${actionPrompt}
+
+Current slide (type: "${contentData.type}"):
+${JSON.stringify(contentData, null, 2)}
+
+Return ONLY a single valid JSON object (not wrapped in array, not in markdown).
+The object must have "type": "${contentData.type}" and all fields for that slide type.
+Do NOT change the "type" field. Keep it as "${contentData.type}".`;
+
+    const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-flash-latest"];
+    const requestBody = JSON.stringify({
+      contents: [{ parts: [{ text: SYSTEM_PROMPT + "\n\n" + prompt }] }],
+      generationConfig: { temperature: 0.7, maxOutputTokens: 4096 },
+    });
+
+    let geminiData = null;
+    for (const model of MODELS) {
+      try {
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: requestBody,
+        });
+        if (r.ok) { geminiData = await r.json(); console.log(`edit-slide: ${action} via ${model}`); break; }
+      } catch {}
+    }
+
+    if (!geminiData) return res.status(503).json({ error: "AI service unavailable. Try again." });
+
+    const text = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    let jsonStr = text;
+    const fm = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (fm) jsonStr = fm[1];
+    const fb = jsonStr.indexOf("{"), lb = jsonStr.lastIndexOf("}");
+    if (fb !== -1 && lb > fb) jsonStr = jsonStr.substring(fb, lb + 1);
+    jsonStr = jsonStr.trim().replace(/,\s*}/g, "}").replace(/,\s*\]/g, "]");
+
+    const edited = JSON.parse(jsonStr);
+
+    // Ensure type is preserved
+    edited.type = contentData.type;
+
+    res.json({ slide: edited, action });
+  } catch (e) {
+    if (e instanceof SyntaxError) return res.status(422).json({ error: "AI returned invalid JSON. Try again." });
+    console.error("edit-slide error:", e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // PRODUCTION — Serve built frontend
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const distPath = path.join(__dirname, "dist");
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
-  app.get("*", (req, res) => {
+  app.get("/{*path}", (req, res) => {
     if (!req.path.startsWith("/api") && !req.path.startsWith("/uploads")) {
       res.sendFile(path.join(distPath, "index.html"));
     }

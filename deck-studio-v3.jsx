@@ -3944,6 +3944,95 @@ function AIGeneratorModal({ onClose, initialTemplate }) {
 // 🏠  MAIN APP
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 🤖 AI QUICK ACTIONS — Improve/Concise/Visual/Insights per slide
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const AI_ACTIONS = [
+  { id: "improve", label: "✨ Improve", desc: "Enhance clarity & professionalism" },
+  { id: "concise", label: "📝 Concise", desc: "Reduce text to bullet points" },
+  { id: "visual", label: "📊 Visual", desc: "Add icons, metrics, visual structure" },
+  { id: "insights", label: "💡 Insights", desc: "Highlight key business insights" },
+];
+
+function AIQuickActions({ slide, updateSlide, T }) {
+  const [loading, setLoading] = useState(null); // which action is loading
+  const [error, setError] = useState(null);
+  const [undoData, setUndoData] = useState(null); // previous slide data for undo
+
+  const handleAction = useCallback(async (actionId) => {
+    if (loading) return;
+    setLoading(actionId);
+    setError(null);
+
+    // Save current state for undo
+    setUndoData({ ...slide });
+
+    try {
+      const res = await fetch("/api/ai/edit-slide", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: actionId, slideData: slide }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "AI edit failed");
+      if (!data.slide) throw new Error("No slide data returned");
+
+      // Merge AI result into current slide — preserve id, layout, elementStyles
+      const merged = { ...data.slide, id: slide.id, type: slide.type };
+      if (slide.layout) merged.layout = slide.layout;
+      if (slide.elementStyles) merged.elementStyles = slide.elementStyles;
+      if (slide.elementGroups) merged.elementGroups = slide.elementGroups;
+
+      updateSlide(slide.id, merged);
+    } catch (e) {
+      setError(e.message);
+      setTimeout(() => setError(null), 5000);
+    } finally {
+      setLoading(null);
+    }
+  }, [slide, loading, updateSlide]);
+
+  const handleUndo = useCallback(() => {
+    if (!undoData) return;
+    updateSlide(undoData.id, undoData);
+    setUndoData(null);
+  }, [undoData, updateSlide]);
+
+  return (
+    <div style={{ marginBottom: "12px" }}>
+      <div style={{ display: "flex", gap: "4px", flexWrap: "wrap", alignItems: "center" }}>
+        {AI_ACTIONS.map(qa => (
+          <button key={qa.id}
+            onClick={() => handleAction(qa.id)}
+            disabled={!!loading}
+            title={qa.desc}
+            style={{
+              padding: "4px 8px", border: `1px solid ${T.border}`, borderRadius: "6px",
+              background: loading === qa.id ? T.accentGlow : "transparent",
+              color: loading === qa.id ? T.accent : T.textMuted,
+              cursor: loading ? "wait" : "pointer",
+              fontSize: "10px", fontWeight: 600, fontFamily: T.font,
+              transition: "all 0.15s",
+              opacity: loading && loading !== qa.id ? 0.4 : 1,
+            }}
+            onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.background = T.accentGlow; e.currentTarget.style.color = T.accent; } }}
+            onMouseLeave={(e) => { if (loading !== qa.id) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = T.textMuted; } }}
+          >{loading === qa.id ? "⏳" : ""}{qa.label}</button>
+        ))}
+        {undoData && (
+          <button onClick={handleUndo} style={{ padding: "4px 8px", border: `1px solid ${T.border}`, borderRadius: "6px", background: "transparent", color: T.danger, cursor: "pointer", fontSize: "10px", fontWeight: 600, fontFamily: T.font }}>
+            ↩ Undo
+          </button>
+        )}
+      </div>
+      {loading && <div style={{ fontSize: "9px", color: T.accent, marginTop: "4px", fontFamily: T.fontMono }}>AI is editing this slide...</div>}
+      {error && <div style={{ fontSize: "9px", color: T.danger, marginTop: "4px", padding: "4px 8px", background: T.dangerBg, borderRadius: "4px" }}>{error}</div>}
+    </div>
+  );
+}
+
 function AppInner() {
   const { T, css } = useTheme();
   const slides = useStore((s) => s.slides);
@@ -4208,40 +4297,9 @@ function AppInner() {
           </div>
           <div style={{ flex: 1, overflow: "auto", padding: "16px" }}>
             {/* AI Quick Actions */}
+            {current && <AIQuickActions slide={current} updateSlide={updateSlide} T={T} />}
             {current && (
-              <div style={{ marginBottom: "12px", display: "flex", gap: "4px", flexWrap: "wrap" }}>
-                {[
-                  { label: "✨ Improve", action: "Improve this slide: make text more concise, suggest better layout, enhance readability" },
-                  { label: "📝 Concise", action: "Make all text on this slide more concise — reduce to bullet points, remove filler words" },
-                  { label: "📊 Visual", action: "Convert this slide content to a more visual format — use metrics, icons, cards instead of text" },
-                  { label: "💡 Insights", action: "Highlight the key insights and takeaways from this slide data" },
-                ].map(qa => (
-                  <button key={qa.label} onClick={async () => {
-                    try {
-                      const res = await fetch("/api/generate", {
-                        method: "POST", headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ prompt: `${qa.action}. Current slide data: ${JSON.stringify({ type: current.type, title: current.title, subtitle: current.subtitle })}. Return a single slide JSON object with type "${current.type}".` }),
-                      });
-                      const data = await res.json();
-                      if (data.slides?.[0]) {
-                        const improved = data.slides[0];
-                        const { updateSlide: us } = useStoreActions();
-                        // Keep id and type, merge improved content
-                        Object.keys(improved).forEach(k => { if (k !== "id" && k !== "type") current[k] = improved[k]; });
-                        us(current.id, improved);
-                      }
-                    } catch {}
-                  }}
-                    style={{
-                      padding: "4px 8px", border: `1px solid ${T.border}`, borderRadius: "6px",
-                      background: "transparent", color: T.textMuted, cursor: "pointer",
-                      fontSize: "10px", fontWeight: 600, fontFamily: T.font,
-                      transition: "all 0.15s",
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = T.accentGlow; e.currentTarget.style.color = T.accent; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = T.textMuted; }}
-                  >{qa.label}</button>
-                ))}
+              <div style={{ marginBottom: "0" }}>
               </div>
             )}
             {current && <SlideForm slide={current} />}
