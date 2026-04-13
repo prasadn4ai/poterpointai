@@ -1,0 +1,11 @@
+node_modules/
+dist/
+uploads/photos/*
+uploads/templates/*
+uploads/excels/*
+!uploads/.gitkeep
+.env
+*.log
+.DS_Store
+Thumbs.db
+.claude/

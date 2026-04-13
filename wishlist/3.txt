@@ -1,0 +1,210 @@
+You are a senior full-stack developer and design system architect.
+
+Enhance the existing Template System to support **Design Variants per Template**, ensuring that the same data structure can be rendered in multiple visual styles.
+
+---
+
+# 🔹 GOAL
+
+Each template should support:
+
+* Same slide structure
+* Same data mapping
+* Multiple design/layout styles (like Gamma)
+
+Example:
+Template: "Quarterly Business Review"
+Variants:
+
+* Corporate Clean
+* Visual Cards
+* Minimal Executive
+* Dark Mode
+* Infographic Style
+
+---
+
+# 🔹 CORE CONCEPT
+
+Separate:
+
+1. DATA STRUCTURE (what to show)
+2. DESIGN VARIANT (how to show)
+
+---
+
+# 🔹 DATA MODEL UPDATE
+
+Update template model:
+
+class PresentationTemplate {
+string Id;
+string Name;
+string Category;
+List<SlideDefinition> Slides;
+List<DesignVariant> Variants;
+}
+
+class DesignVariant {
+string Id;
+string Name;
+string Theme; // light, dark, colorful
+string LayoutStyle; // grid, cards, infographic
+StyleConfig Style;
+}
+
+class StyleConfig {
+string FontFamily;
+string PrimaryColor;
+string SecondaryColor;
+string Background;
+string CardStyle;
+string IconStyle;
+}
+
+---
+
+# 🔹 FEATURES TO IMPLEMENT
+
+## 1. Variant Selection UI
+
+* When user selects a template:
+  → Show available design variants
+
+UI:
+
+* Preview thumbnails
+* Variant name
+* Quick preview option
+
+---
+
+## 2. Rendering Engine Update
+
+Modify slide renderer:
+
+Instead of:
+renderSlide(data)
+
+Use:
+renderSlide(data, variant)
+
+---
+
+## 3. Layout Variations (IMPORTANT)
+
+Each variant must change layout:
+
+### Example for KPI Slide
+
+Variant 1: Corporate
+
+* KPI in rows
+
+Variant 2: Cards
+
+* KPI in card blocks
+
+Variant 3: Infographic
+
+* KPI with icons + visual emphasis
+
+---
+
+## 4. Theme Engine
+
+Apply variant styles globally:
+
+* Fonts
+* Colors
+* Backgrounds
+* Icon style
+
+---
+
+## 5. AI PROMPT UPDATE
+
+When generating slides, include variant context:
+
+Prompt addition:
+
+"Use the following design style:
+
+* Style: {variant.Name}
+* Layout: {variant.LayoutStyle}
+* Theme: {variant.Theme}
+
+Generate content suitable for this design."
+
+---
+
+## 6. DEFAULT VARIANTS (CREATE)
+
+For each template, add:
+
+1. Corporate Clean
+2. Card-Based Modern
+3. Minimal Executive
+4. Dark Mode
+5. Visual Infographic
+
+---
+
+## 7. PREVIEW SYSTEM
+
+* Allow user to:
+
+  * Preview same data in different variants
+  * Switch instantly
+
+---
+
+## 8. STORAGE
+
+* Save selected variant with presentation
+* Allow switching later
+
+---
+
+# 🔹 UX IMPROVEMENTS
+
+* Default to best variant based on template category
+* Suggest variant automatically (AI optional)
+* Allow "Apply to all slides"
+
+---
+
+# 🔹 RULES
+
+* DO NOT duplicate templates for design
+* Variants must reuse same data structure
+* Keep rendering flexible and modular
+
+---
+
+# 🔹 OUTPUT
+
+System should support:
+
+Template → Data → Variant → Rendered Slides
+
+User can:
+
+* Choose template
+* Choose design style
+* Generate presentation
+
+---
+
+# 🔹 FINAL GOAL
+
+Achieve Gamma-like experience:
+
+* Same content
+* Multiple visual styles
+* Instant switching
+* Professional output
+
+---
+
+Implement this without breaking existing template system.

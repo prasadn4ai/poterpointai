@@ -1,0 +1,34 @@
+{
+  "name": "poterpointai",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "server": "node --env-file=.env server.js",
+    "build": "vite build",
+    "start": "node server.js",
+    "prod": "vite build && node server.js"
+  },
+  "keywords": ["presentation", "ai", "powerpoint", "slides"],
+  "author": "Prasad Nagabathula",
+  "license": "ISC",
+  "description": "PoterPointAI — AI-Powered Presentation Builder",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.88.0",
+    "@google/generative-ai": "^0.24.1",
+    "@vitejs/plugin-react": "^6.0.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
+    "multer": "^2.1.1",
+    "pptx-parser": "^1.1.7-beta.9",
+    "pptxgenjs": "^4.0.1",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "uuid": "^13.0.0",
+    "vite": "^8.0.8",
+    "xlsx": "^0.18.5"
+  }
+}

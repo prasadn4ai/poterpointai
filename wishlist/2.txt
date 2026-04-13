@@ -1,0 +1,137 @@
+You are a senior full-stack developer. Implement **Icon Management System in Canvas Editor**.
+
+---
+
+## GOAL
+
+Allow users to:
+
+* Upload custom icons
+* Select from icon library
+* Replace icons in slides dynamically
+
+---
+
+## ICON TYPES
+
+* KPI icons (growth, revenue)
+* Section icons (agenda, team, projects)
+* Decorative icons
+
+---
+
+## FRONTEND (React)
+
+### Component: IconPicker
+
+Features:
+
+* Upload icon (SVG, PNG)
+* Browse icon library
+* Search icons
+* Replace icon in canvas
+
+---
+
+### Upload
+
+Input: <input type="file" accept=".svg,.png" />
+
+* Preview after upload
+* Store icon URL
+
+---
+
+### Icon Library
+
+Preload categories:
+
+* Business
+* Finance
+* Technology
+* Team
+* Awards
+
+Example icons:
+
+* Growth arrow
+* Dollar sign
+* Team icon
+* Trophy
+
+---
+
+### Canvas Element Model
+
+{
+id,
+type: "icon",
+iconUrl,
+position,
+size,
+color
+}
+
+---
+
+### Behavior
+
+* Click icon in canvas → open IconPicker
+* Select new icon → replace instantly
+* Drag to reposition
+* Resize with handles
+
+---
+
+## BACKEND (.NET)
+
+* API: /api/icons
+
+  * POST /upload
+  * GET /library
+* Store icons:
+
+  * Local or blob storage
+
+---
+
+## STYLE CONTROLS
+
+* Size (px)
+* Color (for SVG)
+* Opacity
+
+---
+
+## ADVANCED
+
+* Allow color override for SVG icons
+* Maintain aspect ratio on resize
+
+---
+
+## EXPORT (PPT)
+
+* Convert icons to images or shapes
+* Maintain size & position
+
+---
+
+## UX RULES
+
+* Default icon set available
+* Limit upload size (2MB)
+* Validate file type
+
+---
+
+## OPTIONAL
+
+* Recently used icons
+* Favorite icons
+
+---
+
+## OUTPUT
+
+Users can customize visuals and replace icons dynamically in slides.

@@ -1,0 +1,62 @@
+Here's the complete tech stack for Deck Studio:
+
+## Frontend
+| Technology | Purpose |
+|---|---|
+| **React 19** | UI framework (JSX, hooks, context) |
+| **Vite 8** | Dev server, HMR, build tool |
+| **Single-file architecture** | `deck-studio-v3.jsx` (~4500+ lines) |
+| **Inline CSS-in-JS** | All styles via React `style` prop (no CSS files) |
+| **Custom Zustand-pattern store** | `createStore/useStore/useStoreActions` — lightweight state management built from scratch |
+
+## Backend
+| Technology | Purpose |
+|---|---|
+| **Node.js 22** | Runtime |
+| **Express 5** | REST API server (port 3001) |
+| **Multer** | File upload middleware (photos, Excel, PPTX) |
+| **XLSX** | Excel parsing and writing |
+| **Google Gemini AI** | Slide generation, template enhancement, data analysis |
+
+## Export Libraries
+| Library | Purpose |
+|---|---|
+| **PptxGenJS 4** | PowerPoint (.pptx) generation |
+| **html2canvas** | Slide-to-canvas capture for PDF |
+| **jsPDF** | PDF document creation |
+
+## Fonts & Assets
+| Asset | Source |
+|---|---|
+| **Outfit** | Primary font (Google Fonts CDN) |
+| **JetBrains Mono** | Monospace font |
+| **DM Sans** | Secondary font |
+| **Miracle logos** | PNG files in `/public` |
+
+## No External UI Libraries
+- No Tailwind, no Material UI, no Chakra
+- No Redux, no Zustand npm package — custom store
+- No React Router — single page app
+- No TypeScript — plain JSX
+- No CSS modules — all inline styles
+
+## Architecture
+```
+Vite (port 5173) ──proxy──> Express (port 3001)
+      │                           │
+  React SPA                  REST APIs
+  (deck-studio-v3.jsx)       (/api/generate)
+      │                       (/api/templates/*)
+  Custom Store               (/api/photos/*)
+  Theme System               (/api/sync/*)
+  Canvas Editor              (/api/icons/*)
+  8 Slide Types              (/api/pptx/*)
+  Export Engine              Gemini AI calls
+```
+
+## Key Design Decisions
+- **Single JSX file** — no component splitting, everything colocated for rapid iteration
+- **No build dependencies** — PptxGenJS/html2canvas/jsPDF loaded as npm modules via dynamic `import()`
+- **Theme as functions** — `getTheme(mode, combo)` returns complete token set, not static constants
+- **Canvas coordinates** — fixed 960×540 space, CSS `transform: scale()` for responsive sizing
+- **Server uses ES modules** — `"type": "module"` in package.json, `import` syntax throughout

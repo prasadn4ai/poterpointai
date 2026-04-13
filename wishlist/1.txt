@@ -1,0 +1,145 @@
+You are a senior frontend + backend developer. Implement **Font Controls in Canvas Editor** for presentation slides.
+
+---
+
+## GOAL
+
+Allow users to:
+
+* Change font family
+* Change font size
+* Apply styles to selected text elements in canvas
+
+---
+
+## SUPPORTED TEXT ELEMENTS
+
+* Slide Title
+* Subtitle
+* Bullet Points
+* Table Text
+* KPI Numbers
+
+---
+
+## FRONTEND (React)
+
+### Component: TextToolbar
+
+Features:
+
+* Font dropdown
+* Font size selector
+* Bold / Italic / Underline (optional)
+
+---
+
+### Font Family Options
+
+Provide predefined list:
+
+* Inter (default)
+* Roboto
+* Open Sans
+* Lato
+* Montserrat
+* Arial
+* Calibri
+
+Dropdown UI: <Select>
+
+  <Option value="Inter">Inter</Option>
+  ...
+</Select>
+
+---
+
+### Font Size Options
+
+* Title: 24–48 px
+* Subtitle: 18–28 px
+* Body: 12–20 px
+
+UI:
+
+* Dropdown OR stepper input
+
+---
+
+### Canvas Integration
+
+Each text element should have:
+
+{
+id,
+type: "text",
+content,
+style: {
+fontFamily,
+fontSize,
+fontWeight,
+fontStyle
+}
+}
+
+---
+
+### Behavior
+
+* When user selects text:
+  → Load current font settings into toolbar
+* On change:
+  → Update element style in state
+  → Re-render immediately
+
+---
+
+## STATE MANAGEMENT
+
+Use centralized store (Redux / Zustand):
+
+updateTextStyle(elementId, styleUpdates)
+
+---
+
+## BACKEND (.NET)
+
+* Persist style settings in slide JSON
+* No heavy processing required
+
+---
+
+## EXPORT (PPT GENERATION)
+
+Map styles to PPT:
+
+* fontFamily → font face
+* fontSize → pt size
+* fontWeight → bold
+* fontStyle → italic
+
+---
+
+## UX RULES
+
+* Maintain consistency:
+
+  * Title fonts larger than body
+* Prevent extreme sizes
+* Default font = Inter
+
+---
+
+## OPTIONAL
+
+* Apply style to:
+
+  * Single element
+  * Entire slide
+  * All slides
+
+---
+
+## OUTPUT
+
+Users can visually control typography across slides dynamically.

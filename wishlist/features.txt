@@ -1,0 +1,188 @@
+================================================================================
+DECK STUDIO - COMPLETE FEATURE INVENTORY
+Generated: April 2026
+Updated: After Step 7 implementation
+================================================================================
+
+[Data Management]
+* Upload Excel files (.xlsx) for data input
+* Upload photos with auto-mapping by filename (VP_John.png)
+* Photo management - edit name, designation, delete
+* Template file upload with version tracking
+* Excel-to-Template sync (propagate new Excel fields to template)
+* Template-to-Excel sync (add template columns to Excel)
+* Auto-create template from mismatched Excel
+* PPTX reverse engineering - parse PowerPoint into reusable template
+* Excel data template generation from imported PPTX
+* Known fields auto-detection (Revenue, Client, Utilization, etc.)
+
+[AI Features]
+* AI slide generation from text prompts (Gemini API)
+* AI generation with template structure constraints
+* AI generation from Excel data (secure + direct mode)
+* Data masking - client names, financials, personal names masked before AI
+* AI template enhancement - analyze and suggest improvements
+* Apply AI enhancements as new template version
+* Multi-model fallback (gemini-2.5-flash, 2.0-flash, flash-lite, flash-latest)
+* Robust JSON extraction from AI responses (fence removal, truncation recovery)
+* 5 prompt templates (Enterprise QBR, Quarterly Report, Startup Pitch, Sales Deck, Project Update)
+
+[Template System]
+* 6 built-in presentation templates (QBR, KPI, Portfolio, Sales, Innovation, Executive)
+* Template Library gallery with grid view, search, and category filters
+* Template preview with slide flow visualization
+* Template selection integrated into AI generation flow
+* User-created custom templates (create, update)
+* Template versioning (v1, v2, etc.)
+* Active template management (one active at a time)
+* Template field mapping schema (fields per slide type)
+* Template categories: Business, Engineering, Sales, Leadership, Custom
+
+[Slide System]
+* 8 slide types: title, agenda, content, dashboard, table, section-overview, highlight-list, thank-you
+* Slide schema with field definitions and defaults
+* Dynamic form editor for each slide type
+* Add, remove, duplicate, reorder slides
+* 17-slide enterprise template as default
+* SlideRenderer with type-based dispatching
+* LayoutSlide - renders elements at canvas-dragged positions
+
+[Canvas Editor]
+* Canvas mode with 960x540 coordinate space
+* Draggable element blocks with pointer event handlers
+* Snap-to-grid (10px)
+* Element selection with blue border + corner handles + label tooltip
+* Canvas blocks render actual slide content
+* Keyboard shortcuts: Arrow nudge, Delete reset, Escape deselect
+* Layout positions saved to slide.layout and respected in preview + presentation
+* Auto-switch to Canvas after AI generation
+* Canvas element selection highlights corresponding form field
+
+[UI/UX Features]
+* 3-panel layout: Navigator | Preview/Canvas | Form Editor
+* Light/Dark mode toggle
+* 5 color combos: Blue, Purple, Teal, Rose, Amber
+* Present from current slide button
+* Presentation mode with keyboard navigation
+* Miracle Software Systems logos in title slide and footer
+
+[Export System]
+* PPTX export via PptxGenJS
+* PDF export via html2canvas + jsPDF
+* JSON data export
+* Theme-aware PPTX export (light/dark + color combo)
+
+[Security Features]
+* Data masking before AI API calls
+* Secure mode toggle in Excel AI generation
+* API key stored server-side only
+* File type and size validation
+* Filename sanitization
+
+[Data Manager Modal]
+* 8 tabs: Photos, Templates, Sync, Excel AI, Import PPT, Enhance
+
+================================================================================
+NEW FEATURES ADDED (from 1.txt, 2.txt, 3.txt)
+================================================================================
+
+[Font Controls - from 1.txt]
+* TextToolbar component in canvas editor
+* Font family selector (9 fonts: Outfit, Inter, Roboto, Open Sans, Lato, Montserrat, DM Sans, Arial, Calibri)
+* Font size selector (10px to 48px, 15 sizes)
+* Bold toggle button (B)
+* Italic toggle button (I)
+* Per-element font style storage (slide.elementStyles)
+* updateElementStyle store action for persisting font changes
+* Styles load when element is selected, update in real-time
+
+[Icon Management - from 2.txt]
+* IconPicker component with category browsing
+* 5 icon categories: Business (14), Finance (10), Technology (12), Team (10), Awards (10)
+* 56+ built-in emoji icons
+* Category tab switching in picker
+* Click-to-replace icon on selected canvas element
+* Custom icon upload endpoint (SVG/PNG, 2MB limit)
+* GET /api/icons/library - browse all categories
+* POST /api/icons/upload - upload custom icons
+
+[Design Variants - from 3.txt]
+* 5 design variants per template:
+  - Corporate Clean (light, grid layout, Inter font)
+  - Card-Based Modern (light, cards layout, Outfit font)
+  - Minimal Executive (light, minimal layout, DM Sans font)
+  - Dark Mode (dark, grid layout, Outfit font)
+  - Visual Infographic (light, infographic layout, Montserrat font)
+* Variant selector in Template Gallery preview panel
+* Each variant defines: fontFamily, primaryColor, secondaryColor, background, cardStyle, iconStyle
+* GET /api/design-variants - list all variants
+* GET /api/design-variants/:id - get variant details
+* Variant passed through template selection to AI generation
+* Separate data structure from design (same template, different visuals)
+
+================================================================================
+IMPROVEMENTS ADDED (Gap Analysis - Steps 5 & 6)
+================================================================================
+
+[Data Mapping Improvements]
+* Field help text (FIELD_HELP) for all 17 field types
+* Descriptive tooltips on every form field label
+* Known fields mapping in auto-template creation
+* Centralized field inference (inferFields) for consistent mapping
+* Fallback handling for missing fields in sync operations
+
+[UX Improvements]
+* Font controls visible when canvas element is selected (reduces clicks)
+* Icon picker accessible directly from canvas toolbar
+* Design variant quick-select in template gallery (no extra modal)
+* Auto-scroll form to highlighted field on canvas selection
+* Help text shown inline with field labels (no hover needed)
+
+[Usability Improvements]
+* Field descriptions visible next to labels (e.g., "Main heading displayed prominently on the slide")
+* File type validation on all upload endpoints (jpg/png for photos, xlsx for templates, pptx for import, svg/png for icons)
+* File size limits enforced (5MB photos, 2MB icons)
+* Filename sanitization on all uploads
+* Error messages improved with specific context
+* Template version auto-increment on upload
+* Active template auto-management (one active at a time)
+
+================================================================================
+BENCHMARK IMPROVEMENTS (from 3.txt & 4.txt - Gamma & Prezi)
+================================================================================
+
+[Design Variants - 3.txt Complete]
+* 5 design variants: Corporate Clean, Card-Based Modern, Minimal Executive, Dark Mode, Visual Infographic
+* Each variant defines: fontFamily, primaryColor, secondaryColor, background, cardStyle, iconStyle
+* Variant selector in Template Gallery preview panel with color dots
+* designVariant stored in global state
+* setDesignVariant store action
+* Variant passed through template selection to AI generation
+* GET /api/design-variants - list all variants
+* GET /api/design-variants/:id - get variant details
+* Separate data structure from design (same data, different visuals)
+
+[Inline Editing - 4.txt Feature 4]
+* Double-click text elements on canvas to edit inline
+* Editable fields: title, subtitle, badge, message, signature, description, page-title, section-title
+* ContentEditable div with auto-focus on double-click
+* Enter to commit, Escape to cancel
+* Changes saved to slide data via updateSlide store action
+* onInlineEdit callback passed from CanvasEditor to CanvasBlock
+
+[AI Design Assistant - 4.txt Features 7-8]
+* 4 AI Quick Action buttons in right panel editor
+* "Improve" - AI improves text conciseness, layout, readability
+* "Concise" - AI reduces text to bullet points, removes filler
+* "Visual" - AI converts text to metrics, icons, cards format
+* "Insights" - AI highlights key takeaways from slide data
+* Each action calls /api/generate with slide context
+* Result merged back into current slide data
+
+[Smart Defaults & UX - 4.txt Feature 10]
+* Field help text for all 17 field types (FIELD_HELP object)
+* Inline descriptions visible next to every form label
+* Per-element font style storage (slide.elementStyles)
+* updateElementStyle store action
+* Icon picker with 5 categories (56+ emojis) in canvas toolbar
+* Font toolbar appears contextually when element is selected

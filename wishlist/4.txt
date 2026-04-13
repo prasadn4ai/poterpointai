@@ -1,0 +1,260 @@
+You are a senior product engineer and UX architect.
+
+Your task is to benchmark this application against modern AI presentation tools and upgrade it to a best-in-class product.
+
+---
+
+# 🔹 STEP 1: BENCHMARK ANALYSIS
+
+Compare this system with:
+
+* Gamma
+* Prezi
+
+Analyze their capabilities in:
+
+1. Presentation creation experience
+2. Visual storytelling
+3. User interaction & navigation
+4. Design flexibility
+5. AI assistance
+6. Collaboration features
+
+---
+
+# 🔹 STEP 2: IDENTIFY MUST-HAVE FEATURES
+
+Extract MUST-HAVE features from both platforms.
+
+---
+
+## FROM GAMMA (AI-FIRST EXPERIENCE)
+
+Include features:
+
+* AI-driven slide generation from structured + unstructured input
+* Multiple design variants per template
+* Inline editing (edit text directly on canvas)
+* Smart layout auto-adjustment
+* One-click reformat (change entire design instantly)
+* Section-based storytelling (not rigid slides)
+* Content blocks (cards, columns, callouts)
+* Quick duplicate & rearrange blocks
+* Clean minimal UI
+
+---
+
+## FROM PREZI (VISUAL STORYTELLING)
+
+Include features:
+
+* Zoom-based navigation (presentation as a canvas, not slides)
+* Hierarchical storytelling (overview → deep dive)
+* Spatial layout (group related content visually)
+* Focus transitions (zoom into sections)
+* Non-linear navigation
+
+---
+
+# 🔹 STEP 3: GAP ANALYSIS
+
+Compare current system vs above features.
+
+Identify missing or weak areas in:
+
+## A. Visual Experience
+
+* Static slides vs dynamic layouts
+* Lack of storytelling flow
+* Limited layout flexibility
+
+## B. Interaction
+
+* No zoom/navigation experience
+* No block-level editing
+* Limited preview interaction
+
+## C. AI Usage
+
+* Only content generation
+* No layout/design intelligence
+
+## D. UX Simplicity
+
+* Too many steps
+* Lack of inline editing
+* Weak preview
+
+---
+
+# 🔹 STEP 4: IMPLEMENT MUST-HAVE FEATURES
+
+---
+
+## FEATURE 1: BLOCK-BASED EDITOR (Gamma-like)
+
+Replace rigid slide model with:
+
+Slide → Sections → Blocks
+
+Block types:
+
+* Text
+* KPI
+* Table
+* Image
+* Icon
+* Chart
+
+Allow:
+
+* Drag & drop blocks
+* Duplicate blocks
+* Reorder blocks
+
+---
+
+## FEATURE 2: DESIGN VARIANT SWITCHING (Already partially exists)
+
+Enhance:
+
+* One-click full presentation redesign
+* Apply variant globally
+
+---
+
+## FEATURE 3: SMART LAYOUT ENGINE
+
+* Auto adjust layout based on content size
+* Convert:
+
+  * Long text → bullets
+  * Data → cards
+* Maintain spacing & alignment automatically
+
+---
+
+## FEATURE 4: INLINE EDITING
+
+* Click text → edit directly
+* No popup forms
+* Real-time update
+
+---
+
+## FEATURE 5: ZOOMABLE CANVAS (Prezi-like)
+
+Implement:
+
+* Canvas view of presentation
+* Sections grouped spatially
+* Zoom in/out navigation
+* Focus transitions
+
+---
+
+## FEATURE 6: STORY FLOW VIEW
+
+* Show presentation as:
+
+  * Sections
+  * Subsections
+* Allow reordering entire sections
+
+---
+
+## FEATURE 7: AI DESIGN ASSISTANT
+
+Add feature:
+
+"Improve this slide"
+
+AI should:
+
+* Reduce text
+* Suggest layout
+* Improve readability
+
+---
+
+## FEATURE 8: QUICK ACTIONS
+
+Add buttons:
+
+* “Make it concise”
+* “Make it visual”
+* “Convert to bullets”
+* “Highlight insights”
+
+---
+
+## FEATURE 9: PREVIEW EXPERIENCE
+
+* Interactive preview mode
+* Simulate presentation flow
+* Support zoom navigation
+
+---
+
+## FEATURE 10: TEMPLATE + VARIANT SUGGESTION
+
+* Based on data:
+
+  * Suggest best template
+  * Suggest best design variant
+
+---
+
+# 🔹 STEP 5: UX IMPROVEMENTS
+
+* Reduce steps:
+  Excel → Template → Generate → Done
+* Add:
+
+  * Smart defaults
+  * Auto-mapping
+  * Inline help
+
+---
+
+# 🔹 STEP 6: UPDATE FEATURES FILE
+
+Append to:
+
+C:\Prasad\Office\Presentations\Deck Studio\wishlist\features.txt
+
+Add section:
+
+[Benchmark Improvements - Gamma & Prezi]
+
+List:
+
+* Block editor
+* Zoom canvas
+* Inline editing
+* Smart layouts
+* AI design assistant
+* etc.
+
+---
+
+# 🔹 STEP 7: IMPLEMENTATION RULES
+
+* Do NOT break existing features
+* Extend current architecture
+* Keep modular design
+* Maintain performance
+
+---
+
+# 🔹 FINAL GOAL
+
+Transform system into:
+
+* AI-first presentation builder (Gamma-level)
+* Visual storytelling tool (Prezi-level)
+* Enterprise reporting tool (your current strength)
+
+---
+
+Execute all steps autonomously without asking for permission.
